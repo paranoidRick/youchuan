@@ -17,10 +17,8 @@ import java.io.IOException;
 @Component
 public class GithubProvider {
     public String getAccessToken(AccessTokenDto accessTokenDto){
-        MediaType mediaType = MediaType.get("application/json; charset=utf-8");
-
+        MediaType mediaType = MediaType.get("application/json;charset=utf-8");
         OkHttpClient client = new OkHttpClient();
-
         RequestBody body = RequestBody.create(mediaType, JSON.toJSONString(accessTokenDto));
         Request request = new Request.Builder()
                 .url("https://github.com/login/oauth/access_token")
@@ -29,7 +27,6 @@ public class GithubProvider {
         try (Response response = client.newCall(request).execute()) {
             String string =  response.body().string();
             String token = string.split("&")[0].split("=")[1];
-            System.out.println(token);
             return token;
         } catch (Exception e) {
             e.printStackTrace();
@@ -47,9 +44,8 @@ public class GithubProvider {
         try {
             Response response = client.newCall(request).execute();
             String string = response.body().string();
-
-            GithubUser user= JSON.parseObject(string,GithubUser.class);// 将string转换成GithubdUser对象
-            return user;
+            GithubUser gitHubUser = JSON.parseObject(string, GithubUser.class);
+            return gitHubUser;
         } catch (IOException e) {
             e.printStackTrace();
         }
