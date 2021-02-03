@@ -1,6 +1,7 @@
 package com.rick.community.controller;
 
 
+import com.rick.community.dto.PaginationDTO;
 import com.rick.community.dto.QuestionDTO;
 import com.rick.community.mapper.QuestionMapper;
 import com.rick.community.mapper.UserMapper;
@@ -11,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
@@ -27,7 +29,9 @@ public class IndexController {
 
 
     @GetMapping("/")
-    public String hello(HttpServletRequest request, Model model){
+    public String index(HttpServletRequest request, Model model,
+                        @RequestParam(name = "page",defaultValue = "1") Integer page,
+                        @RequestParam(name = "size",defaultValue = "5") Integer size){
 
         Cookie[] cookies = request.getCookies();
         if (cookies != null && cookies.length!=0)
@@ -44,8 +48,8 @@ public class IndexController {
                 }
             }
 
-        List<QuestionDTO> questionList = questionService.list();
-        model.addAttribute("questions",questionList);
+        PaginationDTO pagination = questionService.list(page,size);
+        model.addAttribute("pagination",pagination);
         return "index";
     }
 }
